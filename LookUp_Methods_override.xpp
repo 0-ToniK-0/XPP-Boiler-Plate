@@ -1,0 +1,48 @@
+Prerequisites for this are 2 working tables and related forms that have one field in common (an id of an entity).
+The lookup method methods filters data based on your current data choice
+
+Go to your form on which you will add the lookup> Data Sources > The dataset you created > Fields > The Field you need to filter on >
+Method (of the specified field not any other one) > right click > override > lookup
+A code area should open. 
+
+paste the following changing the '< >'  instead of the public void lookup(FormControl _formControl, str _filterStr):
+
+public void lookup(FormControl _formControl, str _filterStr)
+            {
+                //Specify the name of the table the lookup should show data from.
+                SysTableLookup          sysTableLookup = SysTableLookup::newParameters(tableNum(<other_related_table_name>), _formControl);
+                //Create a new query
+                Query                   query = new Query();
+                QueryBuildDataSource    queryBuildDataSource;
+                QueryBuildRange         queryBuildRange;
+ 
+                //Specify the name of the table the lookup should show data from.
+                queryBuildDataSource = query.addDataSource(tableNum( <other_related_table_name> ));
+                //Filter the data on the chosen field on the table.
+                queryBuildRange = queryBuildDataSource.addRange(fieldNum( <other_related_table_name> , <your_field_name_to_be_filtered>));
+                //Only show records where the chosen field matches the value in 
+                //<name_of_data_source_notTheTable>.<your_field_name_to_be_filtered> on the currently selected record.
+                //if (<name_of_data_source_notTheTable>.<your_field_name_to_be_filtered> != "")
+                //{                
+                queryBuildRange.value(queryValue(<name_of_data_source_notTheTable>.<your_field_name_to_be_filtered_equivalent_in_table>));
+                //}
+                //Specify which fields should be shown  in the lookup form.
+                //  field returned is the first field referenced
+                sysTableLookup.addLookupfield(fieldNum(<other_related_table_name>, <your_field_1> ));
+                sysTableLookup.addLookupfield(fieldNum(<other_related_table_name>, <your_field_2> ));
+                sysTableLookup.addLookupfield(fieldNum(<other_related_table_name>, <your_field_3> ));
+ 
+                sysTableLookup.parmQuery(query);
+                sysTableLookup.performFormLookup();
+            }
+  
+Next Step is to create 2 seperate relations using the file Lookup_Methods.xpp.
+
+
+
+important notes: 
+1. <your_field_name_to_be_filtered> should be different from the field you chose to override its method 
+2. In the following:
+        sysTableLookup.addLookupfield(fieldNum(<other_related_table_name>, <your_field_1> ));
+let <your_field_1> be the name of the field you chose to override then add the other ones.
+3. Test your relations before you add your code to make sure they work

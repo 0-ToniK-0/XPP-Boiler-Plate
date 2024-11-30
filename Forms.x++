@@ -1,0 +1,60 @@
+A form is used to enter data into tables using a UI on the dynamics system. 
+
+Part 1: Table Creation:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+First Create a Table.
+Create and extended string data type.
+Drag it to the table fields.
+Add other table fields by right clicking on fields > new > data type needed > ... (Add as many as you need.)
+Go to Field Groups > New Group > Call it identification. 
+Drag and drop all the fields into AutoReport, AutoLookup, Identification
+
+Go to indexes > New Index > Rename Index to your extended string type and add " X " to it > Properties > Allow Duplicates : No 
+Drag and drop your your extended string type to the created index 
+Go to your table Properties > Primary Index > Name of your primary Index (instead of SurrogateKey)
+
+
+
+Part 2: Form Creation:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+Create a form.
+Drag and drop your table to the Data Sources.
+Go to Design > Apply Pattern > Simple List 
+(This will give you a Design and blueprint to wokr with).
+Rigth Click on Design > New > Action Pane
+Rigth Click on Design > New > Grid > Properties of the grid > Data Source > Table Name > Data Group > Identification 
+Rigth Click on Design > New > Group > Rigth Click on Group > Move Up > Rigth Click on Group > Apply Pattern > Custom and Quick Filters
+Rigth Click on Group > New > Quick Filter
+
+
+Part 3: Menu Item Creation:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+Create a DISPLAY Menu Item.
+Open its Properties > 
+    Object Type : Form 
+    Object : <the_name_of_your_form>
+    Label : <(any easy to reat title. This will be the title that will show on the system)>
+
+
+Part 4: Adding the menu item to the system:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+
+if(you have not extended system menus)
+{
+    Go to application explorer > User Interface > Menus > Chose Desired Folder (accounts recievable preffered) > right click the folder >
+    if(you dont see the extendend button)
+    {
+        Go to Create Extension > Dynamics 365 > Model Management > Update Model Parameters > Choose your model name in "Model name:" > Next > Chose the model you which to extend (the one that corresponds with The menu folder needed)
+    } 
+    Go to The menu Item you extended in Menu Extension > Right Click on menu folder > Create Extension
+    This should add a new Item in your project open it
+}
+else {
+    Go to application explorer > User Interface > Menu Extension > Chose Desired Folder > Right click > Add to project.
+}
+
+By now you should have a system menu extended in ur project > open it > Right click on its name > New > SubMenu 
+Rename you SubMenu and change its label (label will show on the system) 
+Drag and drop you display menu item into the submenu. 
+
+Build project and synchronize with database. This should make your form appear.

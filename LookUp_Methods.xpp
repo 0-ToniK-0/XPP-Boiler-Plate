@@ -1,0 +1,13 @@
+Prerequisites for this are 2 working tables and related forms that have one field in common (an id of an entity).
+The lookup method gives you a option like a combobox with enum but using data from another form. 
+This makes it so that you can only choose already available options and see what they are about beforehand without navigating back to the form. 
+
+Go to your table on which you will add the lookup > Relations > New > rename it to your table name > properties > Change Related table to your other table > 
+> Right click on the relation > New > Normal > 
+Open the properties > Change Field, Name, Related Field to the desired common field needed.
+You should be able to see a subfield under your relation with you chosenField == chosenField.
+
+Go to the table that will be diplayed as a lookup > Field Groups > Auto Lookup > Drag and drop the fields you want to be shown or Delete the one you want hidden.
+
+Then all you have to do is build and it should work. 
+(You can then override the lookup method so that it filters data and narrows selection. This is explained in different file.)

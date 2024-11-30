@@ -1,0 +1,112 @@
+Prerequisites for this are a working form and table.
+
+A number sequence is a an auto increment for a table which is automatically assigned. 
+To do that you have to first create a table with fields. The primary key should be an extended data type of type string.
+Set the string as the primary key for the table. Here I will call it: "<primary_key_id>"
+
+Create 2 classes one that is runnable and another normal class. Let their names end by NumSeq (because it looks better).
+
+paste this code in the non runnable class and change the '<  >' : 
+
+public class <yourClassNumSeq> extends NumberSeqApplicationModule
+{
+    protected void loadModule()
+    {
+        NumberSeqDatatype datatype = NumberSeqDatatype::construct();
+
+        datatype.parmDatatypeId(extendedTypeNum(<primary_key_id>));
+        datatype.parmReferenceHelp(literalStr("Unique key used for <whatever you are creating it for>."));
+        datatype.parmWizardIsContinuous(false);
+        datatype.parmWizardIsManual(NoYes::No);
+        datatype.parmWizardFetchAheadQty(10);
+        datatype.parmWizardIsChangeDownAllowed(NoYes::No);
+        datatype.parmWizardIsChangeUpAllowed(NoYes::No);
+        datatype.parmSortField(1);
+
+        datatype.addParameterType(NumberSeqParameterType::DataArea, true, false);
+        this.create(datatype);
+    }
+
+    public NumberSeqModule numberSeqModule()
+    {
+        return NumberSeqModule::Cust;
+        //cust is for the accounts receivable. other menu objects have different NumberSeqModule.
+    }
+
+    [SubscribesTo(classstr(NumberSeqGlobal),delegatestr(NumberSeqGlobal,buildModulesMapDelegate))]
+    static void buildModulesMapSubsciber(Map numberSeqModuleNamesMap)
+    {
+        NumberSeqGlobal::addModuleToMap(classnum(<yourClassNumSeq>), numberSeqModuleNamesMap);
+    }
+
+}
+
+
+paste this code in the runnable class and change the <> and set as start up object (right click on the class): 
+
+internal final class <yourClassRunNumSeq>
+{
+    /// <summary>
+    /// Class entry point. The system will call this method when a designated menu 
+    /// is selected or when execution starts and this class is set as the startup class.
+    /// </summary>
+    /// <param name = "_args">The specified arguments.</param>
+    public static void main(Args _args)
+    {
+        <yourClassNumSeq_NotTheRunnableOne> newNumSeqObj = new newNumSeqObj();
+        newNumSeqObj.load();
+    }
+
+}
+
+Dont forget to set <yourClassRunNumSeq> as start object. Then create an action menu.
+Set object type to clas and object to the runnable class "<yourClassRunNumSeq>". This step is optional,
+if the class doesnt show on dynamics. Do it either way. After creating the menu deploy it to the system by 
+extending accounts receivable or any other one item and drag it to it.
+
+
+Last development step, Go to your form > Data sources > The dataset you uploeded > Methods.
+Methods should be empty. Right click on Methods > Press Override > create (not canCreate).
+This should open a code area. If it doesnt press on Methods then create. Paste the following code:
+
+[Form]
+public class <Name_of_ur_form> extends FormRun
+{
+    [DataSource]
+    class <Name_of_your_table>
+    {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name = "_append"></param>
+        public void create(boolean _append = false)
+        {
+            <primary_key_id> autoKeyNQ;
+            NumberSequenceReference numberSequenceReference;
+
+            super(_append);
+
+            numberSequenceReference = NumberSeqReference::findReference(extendedTypeNum(<primary_key_id>));
+            if (numberSequenceReference)
+            {
+                autoKeyNQ = NumberSeq::newGetNum(numberSequenceReference).num();
+                <Name_of_your_table>.<primary_key_id> = autoKeyNQ;
+            }
+        }
+    }
+}
+
+
+After this the development part is done, go to Dynamics 365:
+
+1.	Refresh the page.
+2.	Go to Organization administration > Number sequences > Number sequences.
+3.	Click Generate.
+4.	Click Next.
+5.	In the list, find and select the desired record (search for <primary_key_id> if it doesnt show go to Accounts receivable > Setup > Accounts receivable parameters > go to last itme in list and copy name and find its name).
+6.	Click Next.
+7.	Click Finish.
+8.	Close the page.
+9.	Go to Accounts receivable > Menu of the form desired > Form desired.
+10.	Click New to test it out at least twice. 
+11.	Click Save.

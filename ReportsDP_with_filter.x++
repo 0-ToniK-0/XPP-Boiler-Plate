@@ -1,0 +1,113 @@
+Prerequisites is a table that has been populated with data from a form.
+Create a table that will be a temporary table. Let it end with TMP. 
+Change the properties of the table: 
+Allow Row version change tracking to: No.
+Table Type: TempDb
+
+Create a Contract class. Let it end with Contract. (you will add the things you want to addd as a parameter in this class)  
+paste the following changing the '< >' :
+
+class <yourContractClass_contract>
+{
+        <data_type_of_item_filtered> filterVar;
+
+        [DataMemberAttribute('<data_type_of_item_filtered>')]
+    public str parmFilterVar(str _filterVar = filterVar)
+        {
+            filterVar = _filterVar;
+            return filterVar;
+        }
+}
+
+Create a Data provider class. Let it end with dp. 
+paste the following changing the '< >' :
+
+[SRSReportParameterAttribute(classStr(<yourContractClass_contract>))]
+public class <data_provider_class_dp> extends SRSReportDataProviderBase
+{
+    <temporary_table_TMP> reportTmp;
+    [SRSReportDataSetAttribute(tableStr(<temporary_table_TMP>))]
+    public <temporary_table_TMP> getTmp()
+    {
+        select reportTmp;
+        return reportTmp;
+    }
+
+    public void processReport()
+    {
+        <yourContractClass_contract> contract =
+            this.parmDataContract() as <yourContractClass_contract>;
+        
+        <original_table> tableObj;
+        <data_type_of_item_filtered> filterVar = contract.parmFilterVar();
+        
+        while select tableObj
+            where tableObj.<item_filtered> == filterVar
+        {
+            reportTmp.clear();
+            reportTmp.<field1> = tableObj.<field1>;
+            reportTmp.<field2> = tableObj.<field2>;
+            reportTmp.<field3> = tableObj.<field3>;
+            //add as many fields as you need.
+            reportTmp.insert();
+        }
+    }
+
+}
+
+
+Then create a contoller class which will show the report. Let the class name end with "controller"
+paste the following changing the '< >' :
+
+class <controller_class_controller> extends SrsReportRunController
+{
+    public static <controller_class_controller> construct()
+    {
+        return new <controller_class_controller>();
+    }
+
+    public static void main(Args _args)
+    {
+        <controller_class_controller> controller = <controller_class_controller>::construct();
+
+        controller.parmArgs(_args);
+        controller.parmReportName(ssrsReportStr(<your_report_name>, Report));
+        controller.startOperation();
+    }
+}
+
+
+After that create your report. Right click on Datasets > New Data Set > Rename the dataset preferably to the name of the original table.
+Then go to the properties of the new dataset.
+Change:     Data source type: report data provider
+In the query field enter:
+SELECT * FROM <data_provider_class_dp>.<temporary_table_TMP>
+
+
+Click on the fields of your dataset. The fields should be populated.
+
+
+Right click on Designs > New > Precision Design
+A design area should open. 
+Right click in the white space > insert > table
+Click on report data. A tab should show. Press on datasets, your table; your fields should show.
+Drag and drop fields to the table.
+Save your work and rename your design from PrecisionDesign1 to Report. 
+
+
+Create and add an action menu item. 
+Change      object type : class
+let the object be the controller class.
+Add a label to your menu.
+
+
+Extend accounts receivable or the location you want to add your menu item.
+
+Create and add a security privilege.
+In Entry Points drag and drop your output menu item. 
+
+Lastly:
+Build your project
+Synchronize to database
+DEPLOY YOUR REPORT (right click on report and press DEPLOY).
+Report should be visible

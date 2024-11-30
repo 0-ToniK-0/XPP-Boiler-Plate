@@ -1,0 +1,38 @@
+Prerequisites for this are a working table and a form with an enum type.
+The executeQuery filters data based on an enum 
+
+Step one is go to to your form on visual studio. You should have a group control with a Quick filter.
+Click on your form group control and right click > new > combobox.
+Open the properties of the combobox
+Set enum to the enum type you want to use.
+Go to Auto Decleration in properties and set it to yes.
+Click on the combo box > Methods > Ovveride > selectioChange.
+This should open a code area.
+
+paste the following changing the '< >' in "class FormComboBoxControl":
+
+    public int selectionChange()
+    {
+        int ret;
+    
+        ret = super();
+    
+        <your_table_name>_ds.executeQuery();
+        //add _ds so that the system automatically does something. add it.
+        return ret;
+    }
+
+
+Then go to your form > data source > the data source you chose > methods of the data source not the form > ovveride > executeQuery
+when you ovveride it a code area should open.
+paste the following changing the '< >' in the function "public void executeQuery()"":
+
+    public void executeQuery()
+    {
+        QueryBuildDataSource queryBuildDataSource;
+
+        queryBuildDataSource = this.query().dataSourceTable(tableNum(<your_table_name>));
+        queryBuildDataSource.clearRanges();
+        queryBuildDataSource.addRange(fieldNum(<your_table_name>, <The_field_you_want_to_filter>)).value(queryValue(<the_name_of_combo_box (default is "FormComboBoxControl")>.selection()));
+        super();
+    }
