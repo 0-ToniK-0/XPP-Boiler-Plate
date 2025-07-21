@@ -1,0 +1,6 @@
+Prerequisites are a working table and form.
+
+An edit method is like a display method it alows to show and edit data .
+It uses the keyword edit instead of display. Its first argument is a boolean (_set) which detects user input.
+The second parameter is the data the user is entering which will be an extended data type
+

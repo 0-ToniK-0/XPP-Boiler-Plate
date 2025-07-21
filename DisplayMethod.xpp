@@ -1,0 +1,48 @@
+Prerequisites are a working form and table.
+A display method allows you to generate fields from existing fields and display them in a form.
+
+First create an extended data type of the output needed (string mostly)
+Add a label to it.
+Go to your table > Methods > New Method 
+A code area should open.
+
+requirements: 
+    ☼Use display before the method return type.
+    ☼Let the return type be the extended data type.
+    ☼Make the function public
+    
+Example:
+
+public display <your_extended_data_type> functionName()
+{
+    <your_extended_data_type> Hello = this.<table_field_1> + this.<table_field_2>;
+    return Hello;
+}
+
+Note: this.<table_field> returns the data of the current row you are on.
+
+Save your method. Drag and drop it into Identification in Field Groups
+Go to your form > Data Sources > Your DataSet > Righ Click Restore
+Go to your form Design > FormGridControl (Grid) > Restore 
+
+The following is optional: 
+Caching makes it so that the system doesnt have to calculate the display method every time and saves them.
+{
+option 1:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+    Go to your form > Data Sources > Methods > Right Click > Override > init
+This should open a code area.
+Add the following in the init method:
+        <name_of_your_DataSet>_ds.cacheAddMethodtable(tableMethodStr(<name_of_your_table>,<name_of_your_display_method1>));
+
+option 2:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+Add the following on top of your method
+    [SysClientCacheDataMethodAttribute(true)]
+
+
+Add as many display methods you have
+}
+
+The new fields should be visible in the design preview.
+Build your projects and the fields should be visible.

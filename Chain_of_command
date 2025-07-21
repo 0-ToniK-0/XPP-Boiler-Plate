@@ -1,0 +1,73 @@
+Chain of command refers to extending microsoft classes, forms, tables... to be able to use or edit them.
+In dynamics 365 contrary to AX, you cannot directly edit the source code. You Have to extend a class.
+End your class name in <original_classname>_Class_Extension.
+Using some OOP concepts like:
+[ExtensionOf(classStr(<original_classname>))]
+
+inside <original_classname>_Class_Extension, you should call the method you want to use and inside it you add the next and call function again passing it the arguements of the extended class
+Note: All chain of commands classes should be final.
+Example:
+
+[ExtensionOf(classStr(<original_classname>))]
+final class <original_classname>
+{
+    public str <function_name>(str <args>)
+    {
+        str <ret> = next <function_name>(<arg>);
+    }
+    return ret;
+}
+
+You can add code before the next clause to let the code run before the microsoft function code
+And add code after the next to make your code run after microsoft original code.
+
+Be aware of the return type of the microsoft function and its parameter type/
+
+The same concept applies for methods.
+
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+To extend  Form DataSource Methods  use the following header:
+
+[ExtensionOf(formDataSourceStr(<form_name>,<datasourcename>))]
+
+formDataSourceStr takes 2 parameteres, first one is the name of the form you are using and the second is the datasource 
+
+you can use this.cursor() and assign it to a table buffer.
+this.cursor() gets the current record / row in a table and store it in a table buffer.
+
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+To extend  Form Methods  use the following header:
+
+[ExtensionOf(formStr(<form_name>))]
+
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+To extend  Form DataSource Field Methods  use the following header:
+
+[ExtensionOf(formDataFieldStr(form_name>,<datasource_name>,<field_name>))]
+
+formDataFieldStr takes 3 parameteres, first one is the name of the form you are using and the second is the datasource , the third is the field.
+
+    FormDataObject formDataObject = any2Object(this) as FormDataObject; //get field 
+    FormDataSource formDataSource = formDataObject.datasource(); //get datasource of the field 
+    <DataSource> <dataSource>; // create a table buffer
+
+    <dataSource> = formDataSource.cursor();
+
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+To extend  Control Methods  use the following header:
+
+[ExtensionOf(formControlStr(form_name>,<control_name>))]
+
+formDataSourceStr takes 2 parameteres, first one is the name of the form you are using and the second is the control in the design 
+
+    FormControl formButtonControl = any2Object(this) as FormControl; //this takes our control created
+    FormDataSource formDatasource = formButtonControl.formRun().dataSource(tableStr(<datasource_used>));
+    <DataSource> <dataSource>; // create a table buffer
+    <dataSource> = formDataSource.cursor();
+
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+To extend  Data Entity / Table Methods  use the following header:
+
+[ExtensionOf(tableStr(table_name>))]
+
+

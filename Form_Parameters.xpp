@@ -1,1 +1,88 @@
-Form_Parameters.xpp
+Prerequisites for sending parameters to a form are a table, a working form and display menu item.
+Form parameters let you control actions on your form like deletion and creation accessibilty from the source code.
+
+String/ Normal Parameters:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+Go to your menu item > Properties > Parameters > Enter the string you want to see (This example use: EnableReadOnly )
+Go to your Form > Methods > Right Click > Override > init
+A code are shouold appear.
+
+(Note: The form parameter is a broad area and the below is just an example of what your are able to do. 
+Here we will make a form read only.)
+
+
+paste this code in the code area instead of the function: "public void init()" and change the '<  >' : 
+public void init()
+{
+    super();
+
+    if (element.args())
+    {
+        //Parameter Args
+        if (element.args().parm() == 'EnableReadOnly')
+        {
+            //disable data sources
+            <name_of_your_datasource>_ds.allowEdit(false);
+            <name_of_your_datasource>_ds.allowDelete(false);
+            <name_of_your_datasource>_ds.allowCreate(false);
+            //disable buttons in button group
+            FormButtonGroup.enabled(false);
+        }
+    }
+}
+
+Enum Parameters:
+/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\
+The enum parameter is almost the same with the string, but here the choices are set.
+Same Prerequisites needed.
+
+Create a base enum. Open it > Right Click > New element (as much as needed) > Edit Name and label
+Go to your display menu item > Properties > Enum Type Parameter > Enter the name of the enum you created
+                                          > Enum Parameter > Choose Which Field you want
+
+Go to your Form > Methods > Right Click > Override > init
+A code are shouold appear.
+
+(Note: The form parameter is a broad area and the below is just an example of what your are able to do. 
+Here we will make a form read only or Give you full control .)
+
+paste this code in the code area instead of the function: "public void init()" and change the '<  >' : 
+
+<your_base_enum_name> mode;
+public void init()
+{
+    super();
+
+    if (element.args())
+    {
+        //Handle the scenario where the args sends in the enum you created.
+        //Use the passed in enum to control whether you can edit the form or not.
+        if (element.args().parmEnumType() == enumNum(<your_base_enum_name>))
+        {
+            mode = element.args().parmEnum();
+            element.changeFormBasedOnMode();
+            
+        }
+    }
+}
+
+public void changeFormBasedOnMode()
+{
+    switch (mode)
+    {
+        case StudentFormEnumToni9Mode::<your_enum_field_one_(Ex:FullControll)>:
+            <name_of_your_datasource>_ds.allowEdit(true);
+            <name_of_your_datasource>_ds.allowDelete(true);
+            <name_of_your_datasource>_ds.allowCreate(true);
+            //FormButtonGroup.enabled(true);
+            break;
+
+        //Do not allow editing, deleting, or creation on the datasource in 'ReadOnly' mode.
+        case StudentFormEnumToni9Mode::<your_enum_field_one_(Ex:ReadOnly)>:
+            <name_of_your_datasource>_ds.allowEdit(false);
+            <name_of_your_datasource>_ds.allowDelete(false);
+            <name_of_your_datasource>_ds.allowCreate(false);
+            //FormButtonGroup.enabled(false);
+            break;
+    }
+}
